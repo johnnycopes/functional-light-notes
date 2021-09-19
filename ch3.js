@@ -52,3 +52,43 @@ const p2 = delay(1300, "p2");
 p1
 	.then(constant(p2)) // `() => p2` works, but the FP `constant` utility is preferable because the arrow function is returning a value outside of itself
 	.then(console.log);
+
+// =========================
+
+/*
+	Spread/gather args (known as `apply` and `unapply` in functional libraries like Ramda) are useful utilities
+	for working with functions that have incompatible signatures. If one function expects an array as an input,
+	but another function expects individual arguments, these utilities can help transform one to match what the
+	other is expecting.
+*/
+
+function spreadArgs(fn) {
+	return function spreadFn(argsArr) {
+		return fn(...argsArr);
+	}
+}
+
+function gatherArgs(fn) {
+	return function gatherFn(...args) {
+		return fn(args);
+	}
+}
+
+function foo(x,y) {
+	console.log( x + y );
+}
+
+function bar(fn) {
+	fn( [ 3, 9 ] );
+}
+
+function combineFirstTwo([ v1, v2 ]) {
+	return v1 + v2;
+}
+
+// [1,2,3,4,5].reduce(combineFirstTwo); // fails
+[1,2,3,4,5].reduce(gatherArgs(combineFirstTwo)); // works!
+
+
+// bar( foo ); // fails
+bar( spreadArgs(foo) ); // works!
