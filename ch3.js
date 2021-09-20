@@ -1,4 +1,4 @@
-const { delay } = require("./utility");
+const { delay } = require("./functions/utility");
 
 function unary(fn) {
 	return function onlyOneArg(arg){
@@ -92,3 +92,29 @@ function combineFirstTwo([ v1, v2 ]) {
 
 // bar( foo ); // fails
 bar( spreadArgs(foo) ); // works!
+
+// =========================
+
+function partial(fn,...presetArgs) {
+	return function partiallyApplied(...laterArgs){
+			return fn( ...presetArgs, ...laterArgs );
+	};
+}
+
+// Reduce arity of repetitive function calls
+function ajax(url, data, callback) {
+	console.log(`Calling ${url} with ${data} and executing ${callback.name}`);
+}
+
+const getPerson = partial(ajax, "http://some.api/person");
+const getAnimal = partial(ajax, "http://some.api/animal");
+
+const getCurrentUserV1 = partial(ajax, "http://some.api/person", () => undefined); // good
+const getCurrentUserV2 = partial(getPerson, () => undefined); // better (reuses something that already exists)
+
+function add(x, y) {
+	return x + y;
+}
+
+[1,2,3,4,5].map(val => add(3, val)); // The signature of `add` doesn't match the callback function `map` expects
+[1,2,3,4,5].map(partial(add, 3)); // `partial` can adapt the signature into something that will match what we want

@@ -19,3 +19,17 @@ function gatherArgs(fn) {
 		return fn(args);
 	}
 }
+
+function partial(fn,...presetArgs) {
+	return function partiallyApplied(...laterArgs){
+			return fn( ...presetArgs, ...laterArgs );
+	};
+}
+
+module.exports = {
+	unary,
+	identity,
+	spreadArgs,
+	gatherArgs,
+	partial,
+};
