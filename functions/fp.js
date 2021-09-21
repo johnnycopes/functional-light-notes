@@ -22,8 +22,20 @@ function gatherArgs(fn) {
 
 function partial(fn,...presetArgs) {
 	return function partiallyApplied(...laterArgs){
-			return fn( ...presetArgs, ...laterArgs );
+			return fn(...presetArgs, ...laterArgs);
 	};
+}
+
+function partialRight(fn, ...presetArgs) {
+	return function partiallyAppliedRight(...laterArgs) {
+		return fn(...laterArgs, ...presetArgs);
+	}
+}
+
+function reverseArgs(fn) {
+	return function argsReversed(...args) {
+		fn(...args.reverse());
+	}
 }
 
 module.exports = {
@@ -32,4 +44,6 @@ module.exports = {
 	spreadArgs,
 	gatherArgs,
 	partial,
+	partialRight,
+	reverseArgs,
 };
