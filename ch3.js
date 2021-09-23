@@ -1,20 +1,11 @@
+const { curry, identity, gatherArgs, spreadArgs, unary, partial } = require("./functions/fp");
 const { delay } = require("./functions/utility");
-
-function unary(fn) {
-	return function onlyOneArg(arg){
-			return fn( arg );
-	};
-}
 
 // Shrinking the `parseInt` signature so nothing gets passed into its second argument (the `radix`)
 const withoutUnary = ["1", "2", "3", "4", "5"].map(num => parseInt(num));
 const withUnary = ["1", "2", "3", "4", "5"].map(unary(parseInt));
 
 // =========================
-
-function identity(v) {
-	return v;
-}
 
 // Taking advantage of JS string coercion to filter out empty characters
 var words = "   Now is the time for all...  "
@@ -31,8 +22,8 @@ function upper(txt) {
 	return txt.toUpperCase();
 }
 
-// output( "Hello World", upper );     // HELLO WORLD
-// output( "Hello World" );            // Hello World
+output( "Hello World", upper );     // HELLO WORLD
+output( "Hello World" );            // Hello World
 
 // =========================
 
@@ -62,18 +53,6 @@ p1
 	other is expecting.
 */
 
-function spreadArgs(fn) {
-	return function spreadFn(argsArr) {
-		return fn(...argsArr);
-	}
-}
-
-function gatherArgs(fn) {
-	return function gatherFn(...args) {
-		return fn(args);
-	}
-}
-
 function foo(x,y) {
 	console.log( x + y );
 }
@@ -95,12 +74,6 @@ bar( spreadArgs(foo) ); // works!
 
 // =========================
 
-function partial(fn,...presetArgs) {
-	return function partiallyApplied(...laterArgs){
-			return fn( ...presetArgs, ...laterArgs );
-	};
-}
-
 // Reduce arity of repetitive function calls
 function ajax(url, data, callback) {
 	console.log(`Calling ${url} with ${data} and executing ${callback.name}`);
@@ -116,5 +89,9 @@ function add(x, y) {
 	return x + y;
 }
 
+const adder = curry(add);
+
 [1,2,3,4,5].map(val => add(3, val)); // The signature of `add` doesn't match the callback function `map` expects
 [1,2,3,4,5].map(partial(add, 3)); // `partial` can adapt the signature into something that will match what we want
+[1,2,3,4,5].map(curry(add)(3)); // `curry` can do the same as partial, but in a more destructured way...
+[1,2,3,4,5].map(adder(3)); // ...like here, where we set up the `adder` ahead of time in preparation for later use

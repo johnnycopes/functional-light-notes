@@ -38,6 +38,19 @@ function reverseArgs(fn) {
 	}
 }
 
+function curry(fn, arity = fn.length) {
+	return (function nextCurried(prevArgs) {
+		return function curried(nextArg) {
+			var args = [...prevArgs, nextArg];
+			if (args.length >= arity) {
+				return fn(...args);
+			} else {
+				return nextCurried(args);
+			}
+		};
+	})([]);
+}
+
 module.exports = {
 	unary,
 	identity,
@@ -46,4 +59,5 @@ module.exports = {
 	partial,
 	partialRight,
 	reverseArgs,
+	curry,
 };
