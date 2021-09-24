@@ -76,14 +76,12 @@ bar( spreadArgs(foo) ); // works!
 
 // Reduce arity of repetitive function calls
 function ajax(url, data, callback) {
-	console.log(`Calling ${url} with ${data} and executing ${callback.name}`);
+	console.log(`Calling ${url} with ${data} and executing ${callback?.name}...`);
 }
 
 const getPerson = partial(ajax, "http://some.api/person");
-const getAnimal = partial(ajax, "http://some.api/animal");
-
-const getCurrentUserV1 = partial(ajax, "http://some.api/person", () => undefined); // good
-const getCurrentUserV2 = partial(getPerson, () => undefined); // better (reuses something that already exists)
+const getSpecificUserV1 = partial(ajax, "http://some.api/person", "1"); // good
+const getSpecificUserV2 = partial(getPerson, "1"); // better (reuses something that already exists)
 
 function add(x, y) {
 	return x + y;
@@ -95,3 +93,26 @@ const adder = curry(add);
 [1,2,3,4,5].map(partial(add, 3)); // `partial` can adapt the signature into something that will match what we want
 [1,2,3,4,5].map(curry(add)(3)); // `curry` can do the same as partial, but in a more destructured way...
 [1,2,3,4,5].map(adder(3)); // ...like here, where we set up the `adder` ahead of time in preparation for later use
+
+// =========================
+
+/*
+	Partial application and currying are typically done with arrays, but they can
+	work with objects as well. One advantage of this is getting to disregard order
+	of arguments. For example, if we had our same `ajax` function as before, but
+	with named arguments in the function signature:
+*/
+
+function ajax({ url, data, callback }) {
+	console.log(`Calling ${url} with ${data} and executing ${callback?.name}...`);
+}
+
+// Partial application
+const getPerson = partial(ajax, "http://some.api/person");
+const getSpecificUser = partial(ajax, { url: "http://some.api/person", data: "1" });
+getPerson({ callback: () => null });
+
+// Currying
+const curriedAjax = curryProps(ajax, 3);
+const getSpecificAnimal = curriedAjax({ url: "http://some.api/animal" })({ data: "1" });
+getSpecificAnimal({ callback: () => null });

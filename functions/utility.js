@@ -7,6 +7,11 @@ async function delay(ms, val = 0) {
 	});
 };
 
+function print(arg) {
+	console.log(arg);
+}
+
 module.exports = {
 	delay,
+	print,
 };

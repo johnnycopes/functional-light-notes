@@ -9,15 +9,23 @@ const {
 	partialRight,
 	reverseArgs,
 	curry,
+	uncurry,
+	curryProps,
+	partialProps,
 } = require("./functions/fp");
+const { print } = require("./functions/utility");
 
-const adder = curry(add);
+// https://github.com/getify/Functional-Light-JS/blob/master/manuscript/ch3.md/#spreading-properties
 
-function add(x, y) {
-	return x + y;
+function foo({ x, y, z } = {}) {
+	console.log( `x:${x} y:${y} z:${z}` );
 }
 
-console.log([1,2,3,4,5].map(val => add(3, val))); // The signature of `add` doesn't match the callback function `map` expects
-console.log([1,2,3,4,5].map(partial(add, 3))); // `partial` can adapt the signature into something that will match what we want
-console.log([1,2,3,4,5].map(curry(add)(3))); // `curry` can do the same as partial, but in a more destructured way...
-console.log([1,2,3,4,5].map(adder(3))); // ...like here, where we set up the `adder` ahead of time in preparation for later use
+var f1 = curryProps( foo, 3 );
+var f2 = partialProps( foo, { y: 2 } );
+
+f1( {y: 2} )( {x: 1} )( {z: 3} );
+// x:1 y:2 z:3
+
+f2( { z: 3, x: 1 } );
+// x:1 y:2 z:3
