@@ -4,6 +4,12 @@ function unary(fn) {
 	};
 }
 
+function constant(v) {
+	return function value() {
+		return v;
+	}
+}
+
 function identity(v) {
 	return v;
 }
@@ -104,6 +110,7 @@ function curryProps(fn, arity = 1) {
 
 module.exports = {
 	unary,
+	constant,
 	identity,
 	spreadArgs,
 	gatherArgs,

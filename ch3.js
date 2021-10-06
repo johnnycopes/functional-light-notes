@@ -1,4 +1,4 @@
-const { curry, identity, gatherArgs, spreadArgs, unary, partial } = require("./functions/fp");
+const { curry, identity, constant, gatherArgs, spreadArgs, unary, partial } = require("./functions/fp");
 const { delay } = require("./functions/utility");
 
 // Shrinking the `parseInt` signature so nothing gets passed into its second argument (the `radix`)
@@ -26,13 +26,6 @@ output( "Hello World", upper );     // HELLO WORLD
 output( "Hello World" );            // Hello World
 
 // =========================
-
-function constant(v) {
-	return function value() {
-		return v;
-	}
-}
-
 /*
 	Certain APIs don't let you pass a value directly into a method, but require you to pass in a function, even if all
 	that function does is return the value. One such API is the then(..) method on JS Promises:

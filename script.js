@@ -15,17 +15,24 @@ const {
 } = require("./functions/fp");
 const { print } = require("./functions/utility");
 
-// https://github.com/getify/Functional-Light-JS/blob/master/manuscript/ch3.md/#spreading-properties
-
-function foo({ x, y, z } = {}) {
-	console.log( `x:${x} y:${y} z:${z}` );
+// convenience to avoid any potential binding issue
+// with trying to use `console.log` as a function
+function output(txt) {
+	console.log( txt );
 }
 
-var f1 = curryProps( foo, 3 );
-var f2 = partialProps( foo, { y: 2 } );
+function printIf( predicate, msg ) {
+	if (predicate( msg )) {
+			output( msg );
+	}
+}
 
-f1( {y: 2} )( {x: 1} )( {z: 3} );
-// x:1 y:2 z:3
+function isShortEnough(str) {
+	return str.length <= 5;
+}
 
-f2( { z: 3, x: 1 } );
-// x:1 y:2 z:3
+var msg1 = "Hello";
+var msg2 = msg1 + " World";
+
+printIf( isShortEnough, msg1 );         // Hello
+printIf( isShortEnough, msg2 );
